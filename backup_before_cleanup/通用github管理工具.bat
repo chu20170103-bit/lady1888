@@ -315,7 +315,16 @@ echo.
 
 echo  步驟3: 強制下架GitHub檔案...
 echo  正在移除所有追蹤的檔案...
-git rm -rf --cached . 2>nul
+git rm -r --cached . 2>nul
+if errorlevel 1 (
+    echo  ❌ 移除檔案失敗，嘗試其他方法...
+    git ls-files | xargs git rm --cached 2>nul
+    if errorlevel 1 (
+        echo  ❌ 仍然失敗，嘗試強制移除...
+        git reset --hard HEAD 2>nul
+        git clean -fd 2>nul
+    )
+)
 echo  GitHub檔案已從暫存區移除
 
 echo.
