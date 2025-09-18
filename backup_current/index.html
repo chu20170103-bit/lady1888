@@ -220,6 +220,11 @@
                                 <i class="fas fa-heart"></i> 妹妹姓名生產器
                             </button>
                         </div>
+                        <div class="link-item">
+                            <button class="text-copy-open-btn" id="text-copy-open">
+                                <i class="fas fa-clipboard-list"></i> 文字複製工具
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -274,6 +279,69 @@
                         </button>
                         <button class="copy-all-btn" id="copy-all-names">
                             <i class="fas fa-copy"></i> 複製全部
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文字複製工具彈窗 -->
+    <div id="text-copy-modal" class="text-copy-modal">
+        <div class="text-copy-content">
+            <div class="text-copy-header">
+                <h3><i class="fas fa-clipboard-list"></i> 文字複製工具</h3>
+                <button class="text-copy-close" id="text-copy-close">&times;</button>
+            </div>
+            <div class="text-copy-body">
+                <div class="text-input-area">
+                    <h4>新增文字記錄：</h4>
+                    <textarea id="text-input" placeholder="請輸入要記錄的文字..."></textarea>
+                    <div class="input-controls">
+                        <button class="add-text-btn" id="add-text">
+                            <i class="fas fa-plus"></i> 新增記錄
+                        </button>
+                        <button class="clear-input-btn" id="clear-input">
+                            <i class="fas fa-trash"></i> 清空輸入
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-list-area">
+                    <h4>重要文字：</h4>
+                    <div class="text-list" id="important-text-list">
+                        <div class="no-texts">尚未標記任何重要文字</div>
+                    </div>
+                    <div class="list-controls">
+                        <button class="clear-important-btn" id="clear-important">
+                            <i class="fas fa-star"></i> 清空重要
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-list-area">
+                    <h4>已記錄的文字：</h4>
+                    <div class="text-list" id="text-list">
+                        <div class="no-texts">尚未記錄任何文字</div>
+                    </div>
+                    <div class="list-controls">
+                        <button class="clear-all-btn" id="clear-all">
+                            <i class="fas fa-trash-alt"></i> 清空全部
+                        </button>
+                        <button class="export-btn" id="export-texts">
+                            <i class="fas fa-download"></i> 匯出文字
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-list-area">
+                    <h4>常用文字：</h4>
+                    <div class="text-list" id="favorite-text-list">
+                        <div class="no-texts">尚未收藏任何文字</div>
+                    </div>
+                    <div class="list-controls">
+                        <button class="clear-favorites-btn" id="clear-favorites">
+                            <i class="fas fa-heart-broken"></i> 清空收藏
                         </button>
                     </div>
                 </div>

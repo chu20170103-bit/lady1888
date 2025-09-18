@@ -257,6 +257,463 @@ class Translator {
     }
 }
 
+// 文字複製工具功能
+class TextCopyTool {
+    constructor() {
+        this.modal = document.getElementById('text-copy-modal');
+        this.openBtn = document.getElementById('text-copy-open');
+        this.closeBtn = document.getElementById('text-copy-close');
+        this.textInput = document.getElementById('text-input');
+        this.addTextBtn = document.getElementById('add-text');
+        this.clearInputBtn = document.getElementById('clear-input');
+        this.textList = document.getElementById('text-list');
+        this.favoriteTextList = document.getElementById('favorite-text-list');
+        this.importantTextList = document.getElementById('important-text-list');
+        this.clearAllBtn = document.getElementById('clear-all');
+        this.exportBtn = document.getElementById('export-texts');
+        this.clearFavoritesBtn = document.getElementById('clear-favorites');
+        this.clearImportantBtn = document.getElementById('clear-important');
+        
+        this.texts = JSON.parse(localStorage.getItem('textCopyTool_texts') || '[]');
+        this.favoriteTexts = JSON.parse(localStorage.getItem('textCopyTool_favorites') || '[]');
+        this.importantTexts = JSON.parse(localStorage.getItem('textCopyTool_important') || '[]');
+        
+        this.init();
+    }
+    
+    init() {
+        // 開啟彈窗
+        this.openBtn.addEventListener('click', () => {
+            this.openModal();
+        });
+        
+        // 關閉彈窗
+        this.closeBtn.addEventListener('click', () => {
+            this.closeModal();
+        });
+        
+        // 點擊背景關閉
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.closeModal();
+            }
+        });
+        
+        // 新增文字
+        this.addTextBtn.addEventListener('click', () => {
+            this.addText();
+        });
+        
+        // 清空輸入
+        this.clearInputBtn.addEventListener('click', () => {
+            this.clearInput();
+        });
+        
+        // 清空全部
+        this.clearAllBtn.addEventListener('click', () => {
+            this.clearAll();
+        });
+        
+        // 匯出文字
+        this.exportBtn.addEventListener('click', () => {
+            this.exportTexts();
+        });
+        
+        // 清空收藏
+        this.clearFavoritesBtn.addEventListener('click', () => {
+            this.clearFavorites();
+        });
+        
+        // 清空重要文字
+        this.clearImportantBtn.addEventListener('click', () => {
+            this.clearImportant();
+        });
+        
+        
+        // Enter 鍵新增文字
+        this.textInput.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                this.addText();
+            }
+        });
+        
+        // 載入已保存的文字
+        this.loadTexts();
+        this.loadFavorites();
+        this.loadImportant();
+    }
+    
+    openModal() {
+        this.modal.style.display = 'block';
+        this.textInput.focus();
+        document.body.style.overflow = 'hidden';
+    }
+    
+    closeModal() {
+        this.modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    addText() {
+        const text = this.textInput.value.trim();
+        if (!text) {
+            showToast('請輸入要記錄的文字');
+            return;
+        }
+        
+        const textItem = {
+            id: Date.now(),
+            content: text,
+            timestamp: new Date().toLocaleString('zh-TW'),
+            createdAt: new Date().toISOString()
+        };
+        
+        this.texts.unshift(textItem); // 新增到最前面
+        this.saveTexts();
+        this.renderTexts();
+        this.clearInput();
+        showToast('文字已記錄');
+    }
+    
+    clearInput() {
+        this.textInput.value = '';
+        this.textInput.focus();
+    }
+    
+    clearAll() {
+        if (this.texts.length === 0) {
+            showToast('沒有可清空的文字');
+            return;
+        }
+        
+        if (confirm('確定要清空所有文字記錄嗎？此操作無法復原。')) {
+            this.texts = [];
+            this.saveTexts();
+            this.renderTexts();
+            showToast('已清空所有文字記錄');
+        }
+    }
+    
+    clearFavorites() {
+        if (this.favoriteTexts.length === 0) {
+            showToast('沒有可清空的收藏');
+            return;
+        }
+        
+        if (confirm('確定要清空所有收藏文字嗎？此操作無法復原。')) {
+            this.favoriteTexts = [];
+            this.saveFavorites();
+            this.renderFavorites();
+            showToast('已清空所有收藏文字');
+        }
+    }
+    
+    clearImportant() {
+        if (this.importantTexts.length === 0) {
+            showToast('沒有可清空的重要文字');
+            return;
+        }
+        
+        if (confirm('確定要清空所有重要文字嗎？此操作無法復原。')) {
+            this.importantTexts = [];
+            this.saveImportant();
+            this.renderImportant();
+            showToast('已清空所有重要文字');
+        }
+    }
+    
+    copyText(textId) {
+        const textItem = this.texts.find(item => item.id === textId);
+        if (textItem) {
+            copyToClipboard(textItem.content);
+        }
+    }
+    
+    copyFavoriteText(textId) {
+        const textItem = this.favoriteTexts.find(item => item.id === textId);
+        if (textItem) {
+            copyToClipboard(textItem.content);
+        }
+    }
+    
+    addToFavorites(textId) {
+        const textItem = this.texts.find(item => item.id === textId);
+        if (textItem) {
+            // 檢查是否已經收藏
+            const existingFavorite = this.favoriteTexts.find(item => item.originalId === textId);
+            if (existingFavorite) {
+                showToast('此文字已經在收藏中');
+                return;
+            }
+            
+            const favoriteItem = {
+                id: Date.now(),
+                originalId: textId,
+                content: textItem.content,
+                timestamp: new Date().toLocaleString('zh-TW'),
+                createdAt: new Date().toISOString()
+            };
+            
+            this.favoriteTexts.unshift(favoriteItem);
+            this.saveFavorites();
+            this.renderFavorites();
+            showToast('已加入收藏');
+        }
+    }
+    
+    removeFromFavorites(textId) {
+        if (confirm('確定要從收藏中移除嗎？')) {
+            this.favoriteTexts = this.favoriteTexts.filter(item => item.id !== textId);
+            this.saveFavorites();
+            this.renderFavorites();
+            showToast('已從收藏中移除');
+        }
+    }
+    
+    copyImportantText(textId) {
+        const textItem = this.importantTexts.find(item => item.id === textId);
+        if (textItem) {
+            copyToClipboard(textItem.content);
+        }
+    }
+    
+    addToImportant(textId) {
+        const textItem = this.texts.find(item => item.id === textId);
+        if (textItem) {
+            // 檢查是否已經標記為重要
+            const existingImportant = this.importantTexts.find(item => item.originalId === textId);
+            if (existingImportant) {
+                showToast('此文字已經標記為重要');
+                return;
+            }
+            
+            const importantItem = {
+                id: Date.now(),
+                originalId: textId,
+                content: textItem.content,
+                timestamp: new Date().toLocaleString('zh-TW'),
+                createdAt: new Date().toISOString()
+            };
+            
+            this.importantTexts.unshift(importantItem);
+            this.saveImportant();
+            this.renderImportant();
+            this.renderTexts(); // 重新渲染以更新星星狀態
+            showToast('已標記為重要文字');
+        }
+    }
+    
+    addFavoriteToImportant(favoriteId) {
+        const favoriteItem = this.favoriteTexts.find(item => item.id === favoriteId);
+        if (favoriteItem) {
+            // 檢查是否已經標記為重要
+            const existingImportant = this.importantTexts.find(item => item.originalId === favoriteItem.originalId);
+            if (existingImportant) {
+                showToast('此文字已經標記為重要');
+                return;
+            }
+            
+            const importantItem = {
+                id: Date.now(),
+                originalId: favoriteItem.originalId,
+                content: favoriteItem.content,
+                timestamp: new Date().toLocaleString('zh-TW'),
+                createdAt: new Date().toISOString()
+            };
+            
+            this.importantTexts.unshift(importantItem);
+            this.saveImportant();
+            this.renderImportant();
+            this.renderFavorites(); // 重新渲染以更新星星狀態
+            showToast('已標記為重要文字');
+        }
+    }
+    
+    toggleImportant(textId) {
+        const existingImportant = this.importantTexts.find(item => item.originalId === textId);
+        if (existingImportant) {
+            // 如果已經標記，則取消標記
+            this.importantTexts = this.importantTexts.filter(item => item.originalId !== textId);
+            this.saveImportant();
+            this.renderImportant();
+            this.renderTexts(); // 重新渲染以更新星星狀態
+            showToast('已取消重要標記');
+        } else {
+            // 如果未標記，則標記為重要
+            this.addToImportant(textId);
+        }
+    }
+    
+    toggleFavoriteImportant(favoriteId) {
+        const favoriteItem = this.favoriteTexts.find(item => item.id === favoriteId);
+        if (favoriteItem) {
+            const existingImportant = this.importantTexts.find(item => item.originalId === favoriteItem.originalId);
+            if (existingImportant) {
+                // 如果已經標記，則取消標記
+                this.importantTexts = this.importantTexts.filter(item => item.originalId !== favoriteItem.originalId);
+                this.saveImportant();
+                this.renderImportant();
+                this.renderFavorites(); // 重新渲染以更新星星狀態
+                showToast('已取消重要標記');
+            } else {
+                // 如果未標記，則標記為重要
+                this.addFavoriteToImportant(favoriteId);
+            }
+        }
+    }
+    
+    removeFromImportant(textId) {
+        if (confirm('確定要從重要文字中移除嗎？')) {
+            this.importantTexts = this.importantTexts.filter(item => item.id !== textId);
+            this.saveImportant();
+            this.renderImportant();
+            showToast('已從重要文字中移除');
+        }
+    }
+    
+    
+    
+    deleteText(textId) {
+        if (confirm('確定要刪除這條文字記錄嗎？')) {
+            this.texts = this.texts.filter(item => item.id !== textId);
+            this.saveTexts();
+            this.renderTexts();
+            showToast('文字已刪除');
+        }
+    }
+    
+    exportTexts() {
+        if (this.texts.length === 0) {
+            showToast('沒有可匯出的文字');
+            return;
+        }
+        
+        const exportData = this.texts.map(item => 
+            `[${item.timestamp}] ${item.content}`
+        ).join('\n\n');
+        
+        const blob = new Blob([exportData], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `文字記錄_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('文字已匯出');
+    }
+    
+    saveTexts() {
+        localStorage.setItem('textCopyTool_texts', JSON.stringify(this.texts));
+    }
+    
+    saveFavorites() {
+        localStorage.setItem('textCopyTool_favorites', JSON.stringify(this.favoriteTexts));
+    }
+    
+    saveImportant() {
+        localStorage.setItem('textCopyTool_important', JSON.stringify(this.importantTexts));
+    }
+    
+    loadTexts() {
+        this.renderTexts();
+    }
+    
+    loadFavorites() {
+        this.renderFavorites();
+    }
+    
+    loadImportant() {
+        this.renderImportant();
+    }
+    
+    renderTexts() {
+        if (this.texts.length === 0) {
+            this.textList.innerHTML = '<div class="no-texts">尚未記錄任何文字</div>';
+            return;
+        }
+        
+        this.textList.innerHTML = this.texts.map(item => {
+            const isMarked = this.importantTexts.some(important => important.originalId === item.id);
+            return `
+                <div class="text-item">
+                    <button class="text-item-star-btn ${isMarked ? 'marked' : ''}" onclick="textCopyTool.toggleImportant(${item.id})" title="${isMarked ? '取消重要標記' : '標記為重要'}">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <div class="text-content">${this.escapeHtml(item.content)}</div>
+                    <div class="text-actions">
+                        <button class="text-copy-btn" onclick="textCopyTool.copyText(${item.id})">
+                            <i class="fas fa-copy"></i> 複製
+                        </button>
+                        <button class="text-favorite-btn" onclick="textCopyTool.addToFavorites(${item.id})">
+                            <i class="fas fa-heart"></i> 收藏
+                        </button>
+                        <button class="text-delete-btn" onclick="textCopyTool.deleteText(${item.id})">
+                            <i class="fas fa-trash"></i> 刪除
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    renderFavorites() {
+        if (this.favoriteTexts.length === 0) {
+            this.favoriteTextList.innerHTML = '<div class="no-texts">尚未收藏任何文字</div>';
+            return;
+        }
+        
+        this.favoriteTextList.innerHTML = this.favoriteTexts.map(item => {
+            const isMarked = this.importantTexts.some(important => important.originalId === item.originalId);
+            return `
+                <div class="text-item">
+                    <button class="text-item-star-btn ${isMarked ? 'marked' : ''}" onclick="textCopyTool.toggleFavoriteImportant(${item.id})" title="${isMarked ? '取消重要標記' : '標記為重要'}">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <div class="text-content">${this.escapeHtml(item.content)}</div>
+                    <div class="text-actions">
+                        <button class="text-copy-btn" onclick="textCopyTool.copyFavoriteText(${item.id})">
+                            <i class="fas fa-copy"></i> 複製
+                        </button>
+                        <button class="text-delete-btn" onclick="textCopyTool.removeFromFavorites(${item.id})">
+                            <i class="fas fa-heart-broken"></i> 移除
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    renderImportant() {
+        if (this.importantTexts.length === 0) {
+            this.importantTextList.innerHTML = '<div class="no-texts">尚未標記任何重要文字</div>';
+            return;
+        }
+        
+        this.importantTextList.innerHTML = this.importantTexts.map(item => `
+            <div class="text-item">
+                <div class="text-content">${this.escapeHtml(item.content)}</div>
+                <div class="text-actions">
+                    <button class="text-copy-btn" onclick="textCopyTool.copyImportantText(${item.id})">
+                        <i class="fas fa-copy"></i> 複製
+                    </button>
+                    <button class="text-delete-btn" onclick="textCopyTool.removeFromImportant(${item.id})">
+                        <i class="fas fa-star"></i> 移除
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+}
+
 // 妹妹姓名生產器功能
 class NameGenerator {
     constructor() {
@@ -526,9 +983,10 @@ class NameGenerator {
     }
 }
 
-// 初始化翻譯機和姓名生產器
+// 初始化翻譯機、姓名生產器和文字複製工具
 let translator;
 let nameGenerator;
+let textCopyTool;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -540,6 +998,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化姓名生產器
     nameGenerator = new NameGenerator();
+    
+    // 初始化文字複製工具
+    textCopyTool = new TextCopyTool();
 });
 
 // 更新當前日期
