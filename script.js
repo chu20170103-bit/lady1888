@@ -38,6 +38,14 @@ function initializeEventListeners() {
             }
         });
     });
+    
+    // 妹妹回價工具按鈕
+    const pricingToolBtn = document.getElementById('pricing-tool-open');
+    if (pricingToolBtn) {
+        pricingToolBtn.addEventListener('click', function() {
+            window.open('https://chu20170103-bit.github.io/lady1888/pricing_tool.html', '_blank');
+        });
+    }
 }
 
 
@@ -1002,71 +1010,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化文字複製工具
     textCopyTool = new TextCopyTool();
 });
-
-// 更新當前日期
-function updateCurrentDate() {
-    const now = new Date();
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        weekday: 'long'
-    };
-    const dateString = now.toLocaleDateString('zh-TW', options);
-    document.getElementById('current-date').textContent = dateString;
-}
-
-
-// 初始化事件監聽器
-function initializeEventListeners() {
-    // 複製按鈕
-    const copyButtons = document.querySelectorAll('.copy-btn');
-    copyButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // 優先使用按鈕自身的 data-copy 屬性
-            let textToCopy = this.getAttribute('data-copy');
-            
-            // 如果按鈕沒有 data-copy 屬性，則從父元素獲取
-            if (!textToCopy) {
-                const linkItem = this.closest('.link-item');
-                textToCopy = linkItem.getAttribute('data-copy');
-            }
-            
-            if (textToCopy) {
-                copyToClipboard(textToCopy);
-            }
-        });
-    });
-}
-
-
-// 複製到剪貼簿
-async function copyToClipboard(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        showToast(`已複製: ${text}`);
-    } catch (err) {
-        // 備用方案
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showToast(`已複製: ${text}`);
-    }
-}
-
-// 顯示通知訊息
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
 
 // 初始化完成提示
 setTimeout(() => {
