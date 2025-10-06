@@ -2626,11 +2626,39 @@ body::before {
     pointer-events: auto;
     position: relative;
     z-index: 1;
+    flex: 1;
+    margin: 0;
 }
 
 .pricing-tool-open-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+}
+
+/* 當按鈕在 link-item 中時的特殊處理 */
+.link-item .pricing-tool-open-btn {
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 3px 12px rgba(240, 147, 251, 0.25);
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+}
+
+.link-item .pricing-tool-open-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(240, 147, 251, 0.35);
+    background: linear-gradient(45deg, #f5576c, #f093fb);
 }
 
 /* 響應式設計 - 文字複製工具 */
@@ -2639,6 +2667,18 @@ body::before {
         margin: 5% auto;
         width: 95%;
         max-height: 90vh;
+    }
+    
+    /* 妹妹回價工具按鈕響應式設計 */
+    .pricing-tool-open-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .link-item .pricing-tool-open-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        gap: 4px;
     }
     
     .text-copy-body {

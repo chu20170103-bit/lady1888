@@ -43,7 +43,7 @@ function initializeEventListeners() {
     const pricingToolBtn = document.getElementById('pricing-tool-open');
     if (pricingToolBtn) {
         pricingToolBtn.addEventListener('click', function() {
-            window.open('https://chu20170103-bit.github.io/lady1888/pricing_tool.html', '_blank');
+            window.open('./pricing_tool.html', '_blank');
         });
     }
 }
