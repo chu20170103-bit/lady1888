@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妹妹訂價表計算工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .input-section {
+            margin-bottom: 15px;
+        }
+
+        .input-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .input-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-item label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #34495e;
+            font-size: 0.9em;
+        }
+
+        .input-item input {
+            padding: 8px 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            height: 40px;
+            box-sizing: border-box;
+            background: #fafbfc;
+        }
+
+        .input-item input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+
+
+        .excel-formula-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .excel-formula-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+        }
+
+        .formula-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .formula-text {
+            background: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #495057;
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .copy-btn:active {
+            background: #1e7e34;
+        }
+
+        .copy-status {
+            font-size: 12px;
+            color: #28a745;
+            text-align: center;
+            min-height: 16px;
+        }
+
+        .formula-display-inline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .formula-text-inline {
+            background: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            padding: 4px 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: #495057;
+            word-break: break-all;
+            flex: 1;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .copy-btn-inline {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .copy-btn-inline:hover {
+            background: #218838;
+        }
+
+        .records-section {
+            background: #f8fafb;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .records-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 1px solid #4a90e2;
+            padding-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .save-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .save-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #219a52;
+            transform: translateY(-1px);
+        }
+
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .records-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .record-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .no-records {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .location-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .location-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .location-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .location-btn.active {
+            background: #4a90e2;
+        }
+
+        .location-btn:hover {
+            opacity: 0.8;
+        }
+
+        .location-group {
+            margin-bottom: 20px;
+        }
+
+        .records-four-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .location-section {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .location-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .location-two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .records-column {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .records-column .records-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 5px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .input-item label {
+                font-size: 0.8em;
+            }
+            
+            .records-four-columns {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .location-two-columns {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>妹妹訂價表計算工具</h1>
+            <p>快速計算不同服務方案的營利分析</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2>基本設定</h2>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label>地區選擇</label>
+                        <div class="location-buttons">
+                            <button class="location-btn active" id="taoyuanBtn" onclick="selectLocation('taoyuan')">桃園</button>
+                            <button class="location-btn" id="zhongliBtn" onclick="selectLocation('zhongli')">中壢</button>
+                        </div>
+                    </div>
+                    <div class="input-item">
+                        <label for="sisterName">妹妹名稱</label>
+                        <input type="text" id="sisterName" placeholder="請輸入妹妹名稱">
+                    </div>
+                    <div class="input-item">
+                        <label for="roomNumber">房間號</label>
+                        <input type="text" id="roomNumber" placeholder="請輸入房間號">
+                    </div>
+                    <div class="input-item">
+                        <label for="economyFee">經濟費 (100-300)</label>
+                        <input type="number" id="economyFee" value="300" min="100" max="300" step="100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h2>服務方案設定</h2>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="service1Cost">40/1S 妹拿</label>
+                        <input type="number" id="service1Cost" value="1000" step="100">
+                    </div>
+                    <div class="input-item">
+                        <label for="service1Price">40/1S 回價 (自動計算)</label>
+                        <input type="number" id="service1Price" value="1900" readonly style="background-color: #f5f5f5;">
+                    </div>
+                    <div class="input-item">
+                        <label for="service1NetProfit">40/1S 淨利目標</label>
+                        <input type="number" id="service1NetProfit" value="600" step="100" readonly style="background-color: #f5f5f5;">
+                    </div>
+                    <div class="input-item">
+                        <label>Excel公式</label>
+                        <div class="formula-display-inline">
+                            <div class="formula-text-inline" id="excelFormula">=IF(L175=60,"1300",IF(L175=90,"2300",IF(L175<=40,"1000",IF(L175>60,"1800"))))</div>
+                            <button class="copy-btn-inline" onclick="copyExcelFormula()">📋</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="service2Cost">60/1S 妹拿</label>
+                        <input type="number" id="service2Cost" value="1300" step="100">
+                    </div>
+                    <div class="input-item">
+                        <label for="service2Price">60/1S 回價 (自動計算)</label>
+                        <input type="number" id="service2Price" value="2400" readonly style="background-color: #f5f5f5;">
+                    </div>
+                    <div class="input-item">
+                        <label for="service2NetProfit">60/1S 淨利目標</label>
+                        <input type="number" id="service2NetProfit" value="800" step="100" readonly style="background-color: #f5f5f5;">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="service3Cost">60/2S 妹拿</label>
+                        <input type="number" id="service3Cost" value="1800" step="100">
+                    </div>
+                    <div class="input-item">
+                        <label for="service3Price">60/2S 回價 (自動計算)</label>
+                        <input type="number" id="service3Price" value="2900" readonly style="background-color: #f5f5f5;">
+                    </div>
+                    <div class="input-item">
+                        <label for="service3NetProfit">60/2S 淨利目標</label>
+                        <input type="number" id="service3NetProfit" value="800" step="100" readonly style="background-color: #f5f5f5;">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="service4Cost">90/2S 妹拿</label>
+                        <input type="number" id="service4Cost" value="2300" step="100">
+                    </div>
+                    <div class="input-item">
+                        <label for="service4Price">90/2S 回價 (自動計算)</label>
+                        <input type="number" id="service4Price" value="3600" readonly style="background-color: #f5f5f5;">
+                    </div>
+                    <div class="input-item">
+                        <label for="service4NetProfit">90/2S 淨利目標</label>
+                        <input type="number" id="service4NetProfit" value="1000" step="100" readonly style="background-color: #f5f5f5;">
+                    </div>
+                </div>
+                
+                <div class="save-section">
+                    <button class="save-btn" onclick="saveRecord()">💾 儲存記錄</button>
+                    <button class="clear-btn" onclick="clearAllRecords()">🗑️ 清空所有記錄</button>
+                </div>
+            </div>
+
+            <div class="records-section">
+                <h3>記錄管理</h3>
+                <div class="records-four-columns">
+                    <div class="location-section">
+                        <h4>桃園</h4>
+                        <div class="location-two-columns">
+                            <div class="records-column">
+                                <div class="records-list" id="taoyuanRecordsList1">
+                                    <p class="no-records">暫無記錄</p>
+                                </div>
+                            </div>
+                            <div class="records-column">
+                                <div class="records-list" id="taoyuanRecordsList2">
+                                    <p class="no-records">暫無記錄</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="location-section">
+                        <h4>中壢</h4>
+                        <div class="location-two-columns">
+                            <div class="records-column">
+                                <div class="records-list" id="zhongliRecordsList1">
+                                    <p class="no-records">暫無記錄</p>
+                                </div>
+                            </div>
+                            <div class="records-column">
+                                <div class="records-list" id="zhongliRecordsList2">
+                                    <p class="no-records">暫無記錄</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 更新公式設定
+        function updateFormula() {
+            // 更新Excel公式顯示
+            updateExcelFormula();
+        }
+
+        // 更新Excel公式顯示
+        function updateExcelFormula() {
+            const service1Cost = document.getElementById('service1Cost').value; // 40/1S
+            const service2Cost = document.getElementById('service2Cost').value; // 60/1S
+            const service3Cost = document.getElementById('service3Cost').value; // 60/2S
+            const service4Cost = document.getElementById('service4Cost').value; // 90/2S
+            
+            const excelFormula = `=IF(L175=60,"${service2Cost}",IF(L175=90,"${service4Cost}",IF(L175<=40,"${service1Cost}",IF(L175>60,"${service3Cost}"))))`;
+            
+            // 更新公式顯示
+            document.getElementById('excelFormula').textContent = excelFormula;
+        }
+
+        // 複製Excel公式到剪貼簿
+        function copyExcelFormula() {
+            const formulaText = document.getElementById('excelFormula').textContent;
+            
+            // 使用現代瀏覽器的Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(formulaText).then(function() {
+                    showCopyStatus('✅ 公式已複製到剪貼簿！');
+                }).catch(function(err) {
+                    console.error('複製失敗:', err);
+                    fallbackCopyTextToClipboard(formulaText);
+                });
+            } else {
+                // 降級方案
+                fallbackCopyTextToClipboard(formulaText);
+            }
+        }
+
+        // 降級複製方案
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyStatus('✅ 公式已複製到剪貼簿！');
+                } else {
+                    showCopyStatus('❌ 複製失敗，請手動複製');
+                }
+            } catch (err) {
+                console.error('複製失敗:', err);
+                showCopyStatus('❌ 複製失敗，請手動複製');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 顯示複製狀態
+        function showCopyStatus(message) {
+            // 創建臨時狀態提示
+            const statusDiv = document.createElement('div');
+            statusDiv.textContent = message;
+            statusDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 4px;
+                font-size: 14px;
+                z-index: 1000;
+            `;
+            document.body.appendChild(statusDiv);
+            
+            setTimeout(function() {
+                document.body.removeChild(statusDiv);
+            }, 3000);
+        }
+
+        // 自動計算成本函數 - 根據動態公式邏輯
+        function autoCalculateCost(serviceNumber) {
+            const timeInput = document.getElementById(`service${serviceNumber}Time`);
+            const costInput = document.getElementById(`service${serviceNumber}Cost`);
+            
+            const time = parseInt(timeInput.value) || 0;
+            let cost = 0;
+            
+            // 獲取動態公式設定值
+            const formula60 = parseFloat(document.getElementById('formula60').value) || 1300;
+            const formula90 = parseFloat(document.getElementById('formula90').value) || 2300;
+            const formula40 = parseFloat(document.getElementById('formula40').value) || 1000;
+            const formulaOver60 = parseFloat(document.getElementById('formulaOver60').value) || 1800;
+            
+            // 動態公式邏輯: =IF(L175=60,"formula60",IF(L175=90,"formula90",IF(L175<=40,"formula40",IF(L175>60,"formulaOver60"))))
+            if (time === 60) {
+                cost = formula60;
+            } else if (time === 90) {
+                cost = formula90;
+            } else if (time <= 40) {
+                cost = formula40;
+            } else if (time > 60) {
+                cost = formulaOver60;
+            }
+            
+            costInput.value = cost;
+            
+        }
+
+
+        // 記錄管理功能
+        let records = JSON.parse(localStorage.getItem('sisterRecords')) || [];
+        let currentLocation = 'taoyuan'; // 預設桃園
+
+        // 預設記錄數據
+        const defaultRecords = [
+            // 中壢記錄
+            { id: 1, location: 'zhongli', roomNumber: '201', services: { service1: { cost: 1000 }, service2: { cost: 1200 }, service3: { cost: 1700 } }, economyFee: 300 },
+            { id: 2, location: 'zhongli', roomNumber: '202', services: { service1: { cost: 0 }, service2: { cost: 0 }, service3: { cost: 0 } }, economyFee: 0 },
+            { id: 3, location: 'zhongli', roomNumber: '205', services: { service1: { cost: 0 }, service2: { cost: 0 }, service3: { cost: 0 } }, economyFee: 0 },
+            { id: 4, location: 'zhongli', roomNumber: '206', services: { service1: { cost: 1100 }, service2: { cost: 1400 }, service3: { cost: 1900 } }, economyFee: 300 },
+            { id: 5, location: 'zhongli', roomNumber: '207', services: { service1: { cost: 1000 }, service2: { cost: 1200 }, service3: { cost: 1700 } }, economyFee: 300 },
+            { id: 6, location: 'zhongli', roomNumber: '208', services: { service1: { cost: 1100 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 7, location: 'zhongli', roomNumber: '209', services: { service1: { cost: 1000 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 8, location: 'zhongli', roomNumber: '306', services: { service1: { cost: 1100 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 9, location: 'zhongli', roomNumber: '307', services: { service1: { cost: 0 }, service2: { cost: 0 }, service3: { cost: 0 } }, economyFee: 0 },
+            { id: 10, location: 'zhongli', roomNumber: '308', services: { service1: { cost: 1100 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 11, location: 'zhongli', roomNumber: '309', services: { service1: { cost: 1100 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            
+            // 桃園記錄
+            { id: 12, location: 'taoyuan', roomNumber: '701', services: { service1: { cost: 1100 }, service2: { cost: 1400 }, service3: { cost: 1900 } }, economyFee: 300 },
+            { id: 13, location: 'taoyuan', roomNumber: '702', services: { service1: { cost: 1100 }, service2: { cost: 1400 }, service3: { cost: 1900 } }, economyFee: 300 },
+            { id: 14, location: 'taoyuan', roomNumber: '703', services: { service1: { cost: 1100 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 15, location: 'taoyuan', roomNumber: '705', services: { service1: { cost: 1000 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 16, location: 'taoyuan', roomNumber: '707', services: { service1: { cost: 1000 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 17, location: 'taoyuan', roomNumber: '708', services: { service1: { cost: 0 }, service2: { cost: 0 }, service3: { cost: 0 } }, economyFee: 0 },
+            { id: 18, location: 'taoyuan', roomNumber: '709', services: { service1: { cost: 1100 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 19, location: 'taoyuan', roomNumber: '710', services: { service1: { cost: 1200 }, service2: { cost: 1500 }, service3: { cost: 2000 } }, economyFee: 300 },
+            { id: 20, location: 'taoyuan', roomNumber: '711', services: { service1: { cost: 1000 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 },
+            { id: 21, location: 'taoyuan', roomNumber: '715', services: { service1: { cost: 1000 }, service2: { cost: 1300 }, service3: { cost: 1800 } }, economyFee: 300 }
+        ];
+
+        // 初始化預設記錄（如果沒有現有記錄）
+        if (records.length === 0) {
+            records = defaultRecords;
+            localStorage.setItem('sisterRecords', JSON.stringify(records));
+        }
+        
+        // 強制載入預設記錄（用於測試）
+        records = defaultRecords;
+        localStorage.setItem('sisterRecords', JSON.stringify(records));
+
+        // 選擇地區
+        function selectLocation(location) {
+            currentLocation = location;
+            const taoyuanBtn = document.getElementById('taoyuanBtn');
+            const zhongliBtn = document.getElementById('zhongliBtn');
+            
+            if (location === 'taoyuan') {
+                taoyuanBtn.classList.add('active');
+                zhongliBtn.classList.remove('active');
+            } else {
+                zhongliBtn.classList.add('active');
+                taoyuanBtn.classList.remove('active');
+            }
+        }
+
+        // 儲存記錄
+        function saveRecord() {
+            const sisterName = document.getElementById('sisterName').value;
+            const roomNumber = document.getElementById('roomNumber').value;
+            const economyFee = document.getElementById('economyFee').value;
+            
+            const service1Cost = document.getElementById('service1Cost').value;
+            const service1Price = document.getElementById('service1Price').value;
+            const service1NetProfit = document.getElementById('service1NetProfit').value;
+            
+            const service2Cost = document.getElementById('service2Cost').value;
+            const service2Price = document.getElementById('service2Price').value;
+            const service2NetProfit = document.getElementById('service2NetProfit').value;
+            
+            const service3Cost = document.getElementById('service3Cost').value;
+            const service3Price = document.getElementById('service3Price').value;
+            const service3NetProfit = document.getElementById('service3NetProfit').value;
+            
+            const service4Cost = document.getElementById('service4Cost').value;
+            const service4Price = document.getElementById('service4Price').value;
+            const service4NetProfit = document.getElementById('service4NetProfit').value;
+
+            if (!roomNumber.trim()) {
+                alert('請輸入房間號');
+                return;
+            }
+
+            const record = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleString('zh-TW'),
+                location: currentLocation,
+                sisterName: sisterName,
+                roomNumber: roomNumber,
+                economyFee: economyFee,
+                services: {
+                    service1: { cost: service1Cost, price: service1Price, netProfit: service1NetProfit },
+                    service2: { cost: service2Cost, price: service2Price, netProfit: service2NetProfit },
+                    service3: { cost: service3Cost, price: service3Price, netProfit: service3NetProfit },
+                    service4: { cost: service4Cost, price: service4Price, netProfit: service4NetProfit }
+                }
+            };
+
+            // 檢查是否已存在相同地區和房間號的記錄
+            const existingIndex = records.findIndex(r => r.location === currentLocation && r.roomNumber === roomNumber);
+            
+            if (existingIndex !== -1) {
+                // 取代現有記錄
+                records[existingIndex] = record;
+                alert('記錄已更新！');
+            } else {
+                // 新增記錄
+                records.unshift(record);
+                alert('記錄已儲存！');
+            }
+            
+            localStorage.setItem('sisterRecords', JSON.stringify(records));
+            displayRecords();
+        }
+
+        // 顯示記錄
+        function displayRecords() {
+            const taoyuanRecordsList1 = document.getElementById('taoyuanRecordsList1');
+            const taoyuanRecordsList2 = document.getElementById('taoyuanRecordsList2');
+            const zhongliRecordsList1 = document.getElementById('zhongliRecordsList1');
+            const zhongliRecordsList2 = document.getElementById('zhongliRecordsList2');
+            
+            // 分組顯示：桃園和中壢
+            const taoyuanRecords = records.filter(record => record.location === 'taoyuan');
+            const zhongliRecords = records.filter(record => record.location === 'zhongli');
+
+            // 顯示桃園記錄（分兩欄）
+            if (taoyuanRecords.length > 0) {
+                const midPoint = Math.ceil(taoyuanRecords.length / 2);
+                const taoyuanRecords1 = taoyuanRecords.slice(0, midPoint);
+                const taoyuanRecords2 = taoyuanRecords.slice(midPoint);
+                
+                taoyuanRecordsList1.innerHTML = taoyuanRecords1.map(record => createRecordItem(record)).join('');
+                taoyuanRecordsList2.innerHTML = taoyuanRecords2.map(record => createRecordItem(record)).join('');
+            } else {
+                taoyuanRecordsList1.innerHTML = '<p class="no-records">暫無記錄</p>';
+                taoyuanRecordsList2.innerHTML = '<p class="no-records">暫無記錄</p>';
+            }
+            
+            // 顯示中壢記錄（分兩欄）
+            if (zhongliRecords.length > 0) {
+                const midPoint = Math.ceil(zhongliRecords.length / 2);
+                const zhongliRecords1 = zhongliRecords.slice(0, midPoint);
+                const zhongliRecords2 = zhongliRecords.slice(midPoint);
+                
+                zhongliRecordsList1.innerHTML = zhongliRecords1.map(record => createRecordItem(record)).join('');
+                zhongliRecordsList2.innerHTML = zhongliRecords2.map(record => createRecordItem(record)).join('');
+            } else {
+                zhongliRecordsList1.innerHTML = '<p class="no-records">暫無記錄</p>';
+                zhongliRecordsList2.innerHTML = '<p class="no-records">暫無記錄</p>';
+            }
+        }
+
+        // 創建記錄項目
+        function createRecordItem(record) {
+            const cost1 = Math.floor((record.services.service1.cost || 0) / 100);
+            const cost2 = Math.floor((record.services.service2.cost || 0) / 100);
+            const cost3 = Math.floor((record.services.service3.cost || 0) / 100);
+            const economy = Math.floor((record.economyFee || 0) / 100);
+            
+            // 如果所有成本都是0，只顯示房間號
+            if (cost1 === 0 && cost2 === 0 && cost3 === 0 && economy === 0) {
+                return `
+                    <div class="record-item">
+                        <div class="record-info">
+                            <div class="record-title">${record.roomNumber}</div>
+                        </div>
+                        <div class="record-actions">
+                            <button class="delete-btn" onclick="deleteRecord(${record.id})">刪</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="record-item">
+                    <div class="record-info">
+                        <div class="record-title">${record.roomNumber}「${cost1}-${cost2}-${cost3}+${economy}」</div>
+                    </div>
+                    <div class="record-actions">
+                        <button class="delete-btn" onclick="deleteRecord(${record.id})">刪</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 刪除記錄
+        function deleteRecord(id) {
+            if (confirm('確定要刪除這筆記錄嗎？')) {
+                records = records.filter(record => record.id !== id);
+                localStorage.setItem('sisterRecords', JSON.stringify(records));
+                displayRecords();
+            }
+        }
+
+        // 清空所有記錄
+        function clearAllRecords() {
+            if (confirm('確定要清空所有記錄嗎？此操作無法復原！')) {
+                records = [];
+                localStorage.removeItem('sisterRecords');
+                displayRecords();
+            }
+        }
+
+        // 頁面載入時自動計算一次
+        window.onload = function() {
+            // 初始化所有回價
+            autoCalculatePrice(1);
+            autoCalculatePrice(2);
+            autoCalculatePrice(3);
+            autoCalculatePrice(4);
+            
+            // 初始化Excel公式顯示
+            updateExcelFormula();
+            
+            // 顯示現有記錄
+            displayRecords();
+        };
+
+        // 自動計算回價
+        function autoCalculatePrice(serviceNumber) {
+            const costInput = document.getElementById(`service${serviceNumber}Cost`);
+            const netProfitInput = document.getElementById(`service${serviceNumber}NetProfit`);
+            const priceInput = document.getElementById(`service${serviceNumber}Price`);
+            const economyFeeInput = document.getElementById('economyFee');
+            
+            const cost = parseFloat(costInput.value) || 0;
+            const netProfit = parseFloat(netProfitInput.value) || 0;
+            const economyFee = parseFloat(economyFeeInput.value) || 0;
+            
+            // 回價 = 妹拿 + 經濟費 + 淨利目標
+            const price = cost + economyFee + netProfit;
+            priceInput.value = price;
+        }
+
+        // 當任何輸入值改變時自動重新計算
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'INPUT') {
+                // 如果是服務方案的成本欄位，更新Excel公式
+                if (e.target.id.includes('service') && e.target.id.includes('Cost')) {
+                    updateExcelFormula();
+                }
+                
+                // 如果是妹拿或經濟費改變，自動計算回價
+                if (e.target.id.includes('service') && e.target.id.includes('Cost')) {
+                    const serviceNumber = e.target.id.match(/\d+/)[0];
+                    autoCalculatePrice(serviceNumber);
+                } else if (e.target.id === 'economyFee') {
+                    // 經濟費改變時，重新計算所有回價
+                    autoCalculatePrice(1);
+                    autoCalculatePrice(2);
+                    autoCalculatePrice(3);
+                    autoCalculatePrice(4);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
