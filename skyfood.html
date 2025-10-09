@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天空之城美食平台</title>
+    <meta name="description" content="天空之城美食平台 - 探索漂浮於雲端的傳說之城，開啟一段永恆的冒險旅程。宮崎駿經典動畫、影城入口、官方帳號。">
+    <meta name="keywords" content="天空之城,美食平台,宮崎駿,吉卜力,天空の城ラピュタ,影城">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="天空之城美食平台">
+    <meta property="og:description" content="探索漂浮於雲端的傳說之城，開啟一段永恆的冒險旅程">
+    <meta property="og:image" content="https://resize-image.vocus.cc/resize?norotation=true&quality=80&url=https%3A%2F%2Fimages.vocus.cc%2Fb43e46fd-90ee-4cec-b586-3775407cab85.jpg&width=740&sign=zL9pyNGaZ4ArUtitYVvk7U--7ZAGgUKZ4iep1AO9nIg">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="天空之城美食平台">
+    <meta name="twitter:description" content="探索漂浮於雲端的傳說之城，開啟一段永恆的冒險旅程">
+    <meta name="twitter:image" content="https://resize-image.vocus.cc/resize?norotation=true&quality=80&url=https%3A%2F%2Fimages.vocus.cc%2Fb43e46fd-90ee-4cec-b586-3775407cab85.jpg&width=740&sign=zL9pyNGaZ4ArUtitYVvk7U--7ZAGgUKZ4iep1AO9nIg">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Section */
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+                        url('https://resize-image.vocus.cc/resize?norotation=true&quality=80&url=https%3A%2F%2Fimages.vocus.cc%2Fb43e46fd-90ee-4cec-b586-3775407cab85.jpg&width=740&sign=zL9pyNGaZ4ArUtitYVvk7U--7ZAGgUKZ4iep1AO9nIg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .hero-content .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-content .tagline {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 45px;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: glow-pulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50px;
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.8;
+        }
+
+        .cta-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.7), 
+                transparent
+            );
+            z-index: 1;
+            pointer-events: none;
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        .cta-primary span {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes shine {
+            0% {
+                left: -100%;
+            }
+            20% {
+                left: 100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 20px 50px rgba(245, 87, 108, 0.6);
+            animation: glow-pulse 1s ease-in-out infinite, shake 0.5s ease-in-out;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(245, 87, 108, 0.5), 0 0 25px rgba(245, 87, 108, 0.4);
+            }
+            50% {
+                box-shadow: 0 15px 45px rgba(245, 87, 108, 0.7), 0 0 35px rgba(245, 87, 108, 0.6);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateY(-5px) scale(1.08) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) scale(1.08) rotate(-2deg);
+            }
+            75% {
+                transform: translateY(-5px) scale(1.08) rotate(2deg);
+            }
+        }
+
+        .cta-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            overflow: hidden;
+        }
+
+        .cta-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1;
+            transition: left 0.5s ease;
+        }
+
+        .cta-secondary:hover::before {
+            left: 100%;
+        }
+
+        .cta-secondary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.5);
+        }
+
+        .cta-secondary span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .button-icon {
+            font-size: 1.4rem;
+            animation: pulse 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .cta-primary .button-icon {
+            animation: movie-icon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes movie-icon {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+            }
+            25% {
+                transform: scale(1.2) rotate(-10deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(0deg);
+            }
+            75% {
+                transform: scale(1.2) rotate(10deg);
+            }
+        }
+
+        .scroll-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            padding: 8px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+        }
+
+        .scroll-link:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+
+        /* Main Content Section */
+        .content-section {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            color: #667eea;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Movie Info Section */
+        .movie-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 28px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-card h3::before {
+            content: '✦';
+            margin-right: 10px;
+            color: #764ba2;
+        }
+
+        .info-card p {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Video Section */
+        .video-section {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .video-intro {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 35px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .video-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.3);
+            background: #000;
+            overflow: hidden;
+        }
+
+        .video-wrapper iframe {
+            width: 100%;
+            height: 570px;
+            border-radius: 20px;
+            display: block;
+        }
+
+        /* Other Meanings Section */
+        .other-meanings {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 60px 0;
+        }
+
+        .location-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .location-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .location-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .location-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .location-card-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .location-card-header .subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .location-card-body {
+            padding: 25px;
+        }
+
+        .location-card-body p {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 60px 0;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 25px 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: #f8f9fa;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-item h4 {
+            color: #667eea;
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #2d3436 0%, #000000 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-content .tagline {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                padding: 0 20px;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+                font-size: 1.1rem;
+                padding: 16px 35px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .location-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .content-section, .video-section, .other-meanings, .features {
+                padding: 40px 0;
+            }
+
+            .info-card, .location-card-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content .subtitle {
+                font-size: 1rem;
+            }
+
+            .cta-button {
+                font-size: 1rem;
+                padding: 14px 30px;
+            }
+
+            .button-icon {
+                font-size: 1.2rem;
+            }
+
+            .video-wrapper {
+                max-width: 280px;
+            }
+
+            .video-wrapper iframe {
+                height: 500px;
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 30px;
+            height: 50px;
+            border: 2px solid white;
+            border-radius: 25px;
+            position: relative;
+        }
+
+        .scroll-indicator span::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            margin-left: -3px;
+            background: white;
+            border-radius: 50%;
+            animation: scroll 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @keyframes scroll {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Hero Section -->
+    <header>
+        <div class="hero-content">
+            <h1>天空之城</h1>
+            <div class="subtitle">天空の城ラピュタ • Castle in the Sky</div>
+            <p class="tagline">探索漂浮於雲端的傳說之城，開啟一段永恆的冒險旅程</p>
+            <div class="cta-buttons">
+                <a href="https://www.sex100.co/908154/5/4/28/1/" target="_blank" class="cta-button cta-primary">
+                    <span class="button-icon">🎬</span>
+                    <span>影城入口</span>
+                </a>
+                <a href="https://lin.ee/c5jmlwO" target="_blank" class="cta-button cta-secondary">
+                    <span class="button-icon">📱</span>
+                    <span>加入官方帳號</span>
+                </a>
+            </div>
+            <a href="#content" class="scroll-link">向下探索更多</a>
+        </div>
+        <div class="scroll-indicator">
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Movie Information Section -->
+    <section id="content" class="content-section">
+        <div class="container">
+            <h2 class="section-title">關於吉卜力動畫電影</h2>
+            
+            <div class="movie-info">
+                <div class="info-card">
+                    <h3>製作背景</h3>
+                    <p>這是吉卜力工作室的首部公開院線作品，由宮崎駿擔任原作、導演、劇本和角色設計。這部經典之作奠定了吉卜力工作室在動畫界的重要地位。</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>劇情概要</h3>
+                    <p>故事背景設定在19世紀末的蒸汽朋克世界，主角少年巴魯與持有神秘水晶的少女希達，共同追尋漂浮於空中的傳說之城「拉普達」。</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>影響</h3>
+                    <p>這部電影在日本和海外的動畫、漫畫領域都產生了廣泛影響，被譽為蒸汽朋克流派的重要代表作，啟發了無數後續作品。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="video-section">
+        <div class="container">
+            <h2 class="section-title">經典重現大銀幕</h2>
+            <p class="video-intro">宮崎駿和久石讓的經典之作，讓我們一起回顧這部永恆的傑作</p>
+            
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/rOGmdwai0L8" 
+                            title="宮崎駿和久石讓的經典之作 天空之城能在大銀幕上看啦！" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Other Meanings Section -->
+    <section class="other-meanings">
+        <div class="container">
+            <h2 class="section-title">真實世界的天空之城</h2>
+            
+            <div class="location-cards">
+                <div class="location-card">
+                    <div class="location-card-header">
+                        <h3>義大利白露里治奧</h3>
+                        <p class="subtitle">Civita di Bagnoregio</p>
+                    </div>
+                    <div class="location-card-body">
+                        <p>這座位於義大利的古城常被認為是宮崎駿動畫的靈感來源，其獨特的孤島地貌和「瀕死之城」的稱呼，使其如同漂浮於雲霧中的空中城堡。古老的石造建築佇立在山丘之上，只能透過一條長長的步行橋進入，彷彿真實版的拉普達。</p>
+                    </div>
+                </div>
+
+                <div class="location-card">
+                    <div class="location-card-header">
+                        <h3>台灣苗栗天空之城</h3>
+                        <p class="subtitle">景觀餐廳</p>
+                    </div>
+                    <div class="location-card-body">
+                        <p>位於苗栗大湖鄉，是一個以古堡為主題的熱門旅遊景點，可以眺望鯉魚潭水庫，適合家庭旅遊或約會。園區內的歐式城堡建築與周圍的自然美景完美融合，讓您在台灣也能體驗天空之城的夢幻氛圍。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">為什麼天空之城如此經典</h2>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎬</div>
+                    <h4>宮崎駿巨作</h4>
+                    <p>吉卜力工作室首部作品，奠定大師地位</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">⚙️</div>
+                    <h4>蒸汽朋克美學</h4>
+                    <p>開創性的世界觀設定與視覺風格</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">💫</div>
+                    <h4>永恆的主題</h4>
+                    <p>探討科技與自然、文明與和平</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎵</div>
+                    <h4>久石讓配樂</h4>
+                    <p>動人心弦的經典音樂旋律</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🌍</div>
+                    <h4>全球影響力</h4>
+                    <p>影響世界動畫產業的經典之作</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">❤️</div>
+                    <h4>純真的冒險</h4>
+                    <p>少年少女追尋夢想的勇氣與友情</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 天空之城美食平台</p>
+            <p>致敬宮崎駿大師與吉卜力工作室的不朽經典</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.info-card, .location-card, .feature-item, .video-wrapper').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+
