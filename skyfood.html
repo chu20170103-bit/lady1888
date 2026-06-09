@@ -46,7 +46,7 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -551,6 +551,21 @@
             }
         }
 
+        @media (hover: none), (pointer: coarse), (max-width: 768px) {
+            header {
+                background-attachment: scroll;
+                min-height: 100svh;
+            }
+
+            .cta-primary,
+            .cta-primary::before,
+            .button-icon,
+            .scroll-indicator,
+            .scroll-indicator span::before {
+                animation: none;
+            }
+        }
+
         @media (max-width: 480px) {
             .hero-content h1 {
                 font-size: 2rem;
@@ -693,6 +708,7 @@
                     <iframe src="https://www.youtube.com/embed/rOGmdwai0L8" 
                             title="宮崎駿和久石讓的經典之作 天空之城能在大銀幕上看啦！" 
                             frameborder="0" 
+                            loading="lazy"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen>
@@ -805,21 +821,32 @@
             rootMargin: '0px 0px -50px 0px'
         };
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+        const animatedElements = document.querySelectorAll('.info-card, .location-card, .feature-item, .video-wrapper');
+        const showElement = (el) => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        };
 
-        document.querySelectorAll('.info-card, .location-card, .feature-item, .video-wrapper').forEach(el => {
+        animatedElements.forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
             el.style.transition = 'all 0.6s ease-out';
-            observer.observe(el);
         });
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        showElement(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            animatedElements.forEach(el => observer.observe(el));
+        } else {
+            animatedElements.forEach(showElement);
+        }
     </script>
 </body>
 </html>
